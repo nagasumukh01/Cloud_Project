@@ -1,0 +1,22 @@
+{
+  "experiment": "ablation_m6",
+  "status": "PLANNED - not yet run. Present so the sweep is pre-registered rather than chosen after seeing results.",
+  "description": "Parameter sweep for the adaptive policy. No value in services/risk_model/risk.py may be described as tuned until this has actually been executed.",
+  "grid": {
+    "tau_low": [0.10, 0.175, 0.25, 0.325, 0.40],
+    "tau_high": [0.45, 0.60, 0.75],
+    "epsilon": [0.0, 0.025, 0.05, 0.10, 0.20],
+    "trust_alpha": [0.05, 0.15, 0.30],
+    "trust_prior": [0.5, 0.7, 0.9]
+  },
+  "ablations": [
+    "remove exploration (epsilon=0)",
+    "remove anomaly feature",
+    "remove uncertainty feature",
+    "remove trust feature",
+    "uniform risk weights",
+    "replace trust-weighted selection with random selection"
+  ],
+  "seeds": [42, 43, 44, 45, 46],
+  "tasks_per_run": 300
+}

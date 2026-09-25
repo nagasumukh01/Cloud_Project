@@ -1,0 +1,18 @@
+{
+  "experiment": "scenario_sweep",
+  "description": "Runs each implemented attack scenario against the adaptive policy and the fixed baselines, checking that every crypto-detectable scenario is actually detected.",
+  "tasks_per_run": 80,
+  "workers": 8,
+  "faulty_workers": 2,
+  "seeds": [42, 43],
+  "policies": ["no_verification", "fixed_1", "fixed_3", "risk_adaptive"],
+  "scenarios": [
+    "worker_crash", "slow_worker", "modified_result", "silent_wrong_result",
+    "stale_replay", "backdated_result", "inconsistent_metadata",
+    "model_version_mismatch", "high_failure_rate", "mixed_adversary"
+  ],
+  "excluded_scenarios": {
+    "queue_backlog": "requires the M3 asynchronous queue",
+    "network_delay": "requires M3 containerised workers with a real transport"
+  }
+}

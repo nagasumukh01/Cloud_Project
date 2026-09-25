@@ -1,0 +1,13 @@
+{
+  "experiment": "minimum_viable_experiment",
+  "description": "Six-arm comparison required by the project brief section 10. Pre-registered criteria in docs/research-methodology.md.",
+  "tasks_per_arm": 150,
+  "workers": 8,
+  "faulty_workers": 2,
+  "fault_rate": 0.4,
+  "behaviours": ["tamper_payload", "tamper_transit"],
+  "sensitivity": "medium",
+  "seeds": [42, 43, 44],
+  "arms": ["no_verification", "fixed_1", "fixed_3", "random_spotcheck", "rule_based", "risk_adaptive"],
+  "notes": "Simulation under an injected fault model. Not production measurements."
+}
