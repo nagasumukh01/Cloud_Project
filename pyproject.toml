@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trustproof-cloud"
+version = "0.2.0"
+description = "Risk-adaptive cryptographically verifiable ML inference in distributed cloud environments (research prototype)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Apache-2.0" }
+keywords = ["distributed-systems", "verifiable-inference", "cryptography", "cloud", "research"]
+
+[tool.setuptools]
+packages = ["crypto", "ml", "services", "simulator", "experiments"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q --strict-markers"
+markers = [
+    "slow: long-running experiments, deselect with '-m \"not slow\"'",
+]
+filterwarnings = ["ignore::DeprecationWarning:scipy.*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = ["data", ".venv", "build", "dist"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "S"]
+ignore = [
+    "E501",   # line length handled by the formatter
+    "B008",   # FastAPI Depends() in defaults is the documented idiom
+    "S101",   # asserts are the point in tests
+    "UP042",  # `class X(str, Enum)` is deliberate: SQLAlchemy columns store `.value` and the
+              # mixin keeps JSON serialisation working on Python 3.11 (StrEnum is 3.11+ only
+              # and changes __str__ semantics). Revisit if the floor moves to 3.12.
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S", "B011"]
+"experiments/*" = ["S311"]      # non-cryptographic RNG is intentional in simulation
+"simulator/*" = ["S311"]
+"services/*" = ["S311"]         # scheduling/exploration randomness is not security-critical

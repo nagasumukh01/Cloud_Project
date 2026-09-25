@@ -1,0 +1,11 @@
+# Optional extras. NOT required for M2, and NOT installed by `make install`.
+# Each is free and open source; install only when the corresponding milestone needs it.
+
+redis>=5.0            # M3: Redis Streams queue backend
+xgboost>=2.0          # M4: stronger workload predictor (compare against RandomForest)
+matplotlib>=3.8       # M7: charts
+streamlit>=1.35       # M7: research dashboard
+prometheus-client>=0.20  # M7: /metrics in Prometheus exposition format
+mlflow>=2.12          # M4: optional local experiment tracking (file-backed, no server needed)
+locust>=2.25          # M7: load simulation (a lightweight custom generator is the default)
+# torch>=2.2          # M4, optional: CPU autoencoder. ~200 MB download - only if justified.

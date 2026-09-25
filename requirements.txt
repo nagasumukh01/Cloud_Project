@@ -1,0 +1,25 @@
+# TrustProof-Cloud - core runtime dependencies (all free, OSI-licensed, CPU-only)
+# Verified working set for M2. Pinned loosely (compatible-release) so a fresh install
+# on Python 3.11-3.13 resolves without a compiler.
+
+# --- API / service layer -------------------------------------------------
+fastapi>=0.115
+uvicorn[standard]>=0.30
+pydantic>=2.7
+sqlalchemy>=2.0
+httpx>=0.27              # test client + future inter-service calls
+
+# --- cryptography ---------------------------------------------------------
+cryptography>=42.0       # Ed25519, AES-GCM, scrypt. SHA-256/BLAKE2b/HMAC come from the stdlib.
+
+# --- machine learning / data ----------------------------------------------
+numpy>=1.26
+pandas>=2.0
+scikit-learn>=1.4
+networkx>=3.0
+
+# --- testing / quality ------------------------------------------------------
+pytest>=8.0
+pytest-cov>=5.0
+hypothesis>=6.100
+ruff>=0.5
