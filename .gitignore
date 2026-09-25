@@ -1,0 +1,33 @@
+# data & generated artifacts
+data/
+*.db
+*.sqlite3
+# NOTE: experiment results and the generated report ARE committed on purpose.
+# They are the evidence behind the claims in README.md and docs/research-methodology.md,
+# and committing them is what makes the reported numbers auditable.
+
+# secrets - never commit
+.env
+*.pem
+*.key
+keys/
+
+# python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# tooling
+.mypy_cache/
+.DS_Store
+.idea/
+.vscode/
+mlruns/
