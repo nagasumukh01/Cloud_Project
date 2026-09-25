@@ -1,6 +1,6 @@
 {
-  "experiment_id": "sweep-20260925T182904Z",
-  "created_at": "2026-09-25T18:32:14.444104+00:00",
+  "experiment_id": "sweep-20260925T184139Z",
+  "created_at": "2026-09-25T18:44:47.135729+00:00",
   "config": {
     "tasks": 80,
     "workers": 8,
@@ -47,7 +47,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.075,
-      "mean_latency_ms": 9.975,
+      "mean_latency_ms": 9.473,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -68,7 +68,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.075,
-      "mean_latency_ms": 9.05,
+      "mean_latency_ms": 8.833,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -89,7 +89,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 2.025,
-      "mean_latency_ms": 17.634,
+      "mean_latency_ms": 17.494,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -110,7 +110,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 2.0375,
-      "mean_latency_ms": 17.695,
+      "mean_latency_ms": 17.53,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -131,7 +131,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 4.025,
-      "mean_latency_ms": 36.216,
+      "mean_latency_ms": 35.258,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -152,7 +152,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 4.0375,
-      "mean_latency_ms": 35.453,
+      "mean_latency_ms": 35.252,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -173,7 +173,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.1375,
-      "mean_latency_ms": 10.024,
+      "mean_latency_ms": 9.886,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -194,7 +194,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.15,
-      "mean_latency_ms": 9.745,
+      "mean_latency_ms": 9.462,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -215,7 +215,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.0,
-      "mean_latency_ms": 31.885,
+      "mean_latency_ms": 31.995,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -236,7 +236,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.0,
-      "mean_latency_ms": 49.648,
+      "mean_latency_ms": 49.76,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -257,7 +257,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 2.0,
-      "mean_latency_ms": 76.557,
+      "mean_latency_ms": 76.7,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -278,7 +278,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 2.0,
-      "mean_latency_ms": 86.114,
+      "mean_latency_ms": 86.319,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -299,7 +299,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 4.0,
-      "mean_latency_ms": 157.183,
+      "mean_latency_ms": 157.273,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -320,7 +320,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 4.0,
-      "mean_latency_ms": 175.559,
+      "mean_latency_ms": 173.96,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -341,7 +341,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.075,
-      "mean_latency_ms": 35.973,
+      "mean_latency_ms": 35.786,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -362,7 +362,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.075,
-      "mean_latency_ms": 55.485,
+      "mean_latency_ms": 55.433,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -383,7 +383,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.0375,
-      "mean_latency_ms": 9.904,
+      "mean_latency_ms": 9.751,
       "failure_reasons": {
         "result_hash_mismatch": 3
       },
@@ -406,7 +406,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.05,
-      "mean_latency_ms": 9.792,
+      "mean_latency_ms": 9.4,
       "failure_reasons": {
         "result_hash_mismatch": 4
       },
@@ -429,7 +429,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 2.0,
-      "mean_latency_ms": 19.024,
+      "mean_latency_ms": 18.253,
       "failure_reasons": {
         "result_hash_mismatch": 6
       },
@@ -452,7 +452,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 2.0,
-      "mean_latency_ms": 18.794,
+      "mean_latency_ms": 18.604,
       "failure_reasons": {
         "result_hash_mismatch": 6
       },
@@ -475,7 +475,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 3.95,
-      "mean_latency_ms": 36.886,
+      "mean_latency_ms": 36.268,
       "failure_reasons": {
         "result_hash_mismatch": 8
       },
@@ -498,7 +498,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 4.0,
-      "mean_latency_ms": 37.003,
+      "mean_latency_ms": 36.85,
       "failure_reasons": {
         "result_hash_mismatch": 6
       },
@@ -521,7 +521,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.125,
-      "mean_latency_ms": 10.863,
+      "mean_latency_ms": 10.78,
       "failure_reasons": {
         "result_hash_mismatch": 4
       },
@@ -544,7 +544,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.1375,
-      "mean_latency_ms": 10.063,
+      "mean_latency_ms": 9.901,
       "failure_reasons": {
         "result_hash_mismatch": 4
       },
@@ -567,7 +567,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 7,
       "mean_cost_units": 1.0,
-      "mean_latency_ms": 9.43,
+      "mean_latency_ms": 9.436,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -588,7 +588,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 14,
       "mean_cost_units": 1.0,
-      "mean_latency_ms": 8.978,
+      "mean_latency_ms": 9.079,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -609,7 +609,7 @@
       "completion_rate": 0.9875,
       "wrong_results_served": 0,
       "mean_cost_units": 2.0,
-      "mean_latency_ms": 19.159,
+      "mean_latency_ms": 18.447,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -630,7 +630,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 2.0,
-      "mean_latency_ms": 18.089,
+      "mean_latency_ms": 17.638,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -651,7 +651,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 4.0,
-      "mean_latency_ms": 37.112,
+      "mean_latency_ms": 36.876,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -672,7 +672,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 4.0,
-      "mean_latency_ms": 37.188,
+      "mean_latency_ms": 35.325,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -693,7 +693,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 7,
       "mean_cost_units": 1.075,
-      "mean_latency_ms": 10.866,
+      "mean_latency_ms": 10.206,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -714,7 +714,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 13,
       "mean_cost_units": 1.075,
-      "mean_latency_ms": 9.474,
+      "mean_latency_ms": 9.52,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -735,7 +735,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.0375,
-      "mean_latency_ms": 9.836,
+      "mean_latency_ms": 9.94,
       "failure_reasons": {
         "task_id_mismatch": 3
       },
@@ -758,7 +758,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.0625,
-      "mean_latency_ms": 9.405,
+      "mean_latency_ms": 9.551,
       "failure_reasons": {
         "task_id_mismatch": 5
       },
@@ -781,7 +781,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 2.0,
-      "mean_latency_ms": 18.415,
+      "mean_latency_ms": 18.682,
       "failure_reasons": {
         "task_id_mismatch": 6
       },
@@ -804,7 +804,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 2.0,
-      "mean_latency_ms": 17.911,
+      "mean_latency_ms": 18.852,
       "failure_reasons": {
         "task_id_mismatch": 7
       },
@@ -827,7 +827,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 3.925,
-      "mean_latency_ms": 35.611,
+      "mean_latency_ms": 34.945,
       "failure_reasons": {
         "task_id_mismatch": 9
       },
@@ -850,7 +850,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 3.975,
-      "mean_latency_ms": 36.143,
+      "mean_latency_ms": 35.305,
       "failure_reasons": {
         "task_id_mismatch": 8
       },
@@ -873,7 +873,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.125,
-      "mean_latency_ms": 10.533,
+      "mean_latency_ms": 10.451,
       "failure_reasons": {
         "task_id_mismatch": 4
       },
@@ -896,7 +896,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.1375,
-      "mean_latency_ms": 9.734,
+      "mean_latency_ms": 9.596,
       "failure_reasons": {
         "task_id_mismatch": 5
       },
@@ -919,7 +919,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.05,
-      "mean_latency_ms": 9.851,
+      "mean_latency_ms": 9.635,
       "failure_reasons": {
         "stale_timestamp": 4
       },
@@ -942,7 +942,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.05,
-      "mean_latency_ms": 9.332,
+      "mean_latency_ms": 9.183,
       "failure_reasons": {
         "stale_timestamp": 4
       },
@@ -965,7 +965,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 2.0,
-      "mean_latency_ms": 17.934,
+      "mean_latency_ms": 18.402,
       "failure_reasons": {
         "stale_timestamp": 6
       },
@@ -988,7 +988,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 2.0,
-      "mean_latency_ms": 17.884,
+      "mean_latency_ms": 17.568,
       "failure_reasons": {
         "stale_timestamp": 6
       },
@@ -1011,7 +1011,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 3.95,
-      "mean_latency_ms": 34.978,
+      "mean_latency_ms": 34.322,
       "failure_reasons": {
         "stale_timestamp": 9
       },
@@ -1034,7 +1034,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 4.0,
-      "mean_latency_ms": 35.715,
+      "mean_latency_ms": 34.931,
       "failure_reasons": {
         "stale_timestamp": 8
       },
@@ -1057,7 +1057,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.1375,
-      "mean_latency_ms": 10.866,
+      "mean_latency_ms": 10.501,
       "failure_reasons": {
         "stale_timestamp": 5
       },
@@ -1080,7 +1080,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.1625,
-      "mean_latency_ms": 10.134,
+      "mean_latency_ms": 10.097,
       "failure_reasons": {
         "stale_timestamp": 5
       },
@@ -1103,7 +1103,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.05,
-      "mean_latency_ms": 9.849,
+      "mean_latency_ms": 9.577,
       "failure_reasons": {
         "invalid_signature": 4
       },
@@ -1126,7 +1126,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.05,
-      "mean_latency_ms": 9.323,
+      "mean_latency_ms": 9.272,
       "failure_reasons": {
         "invalid_signature": 4
       },
@@ -1149,7 +1149,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 2.0,
-      "mean_latency_ms": 18.318,
+      "mean_latency_ms": 18.324,
       "failure_reasons": {
         "invalid_signature": 6
       },
@@ -1172,7 +1172,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 2.0,
-      "mean_latency_ms": 18.056,
+      "mean_latency_ms": 18.309,
       "failure_reasons": {
         "invalid_signature": 6
       },
@@ -1195,7 +1195,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 3.95,
-      "mean_latency_ms": 35.405,
+      "mean_latency_ms": 35.294,
       "failure_reasons": {
         "invalid_signature": 9
       },
@@ -1218,7 +1218,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 4.0,
-      "mean_latency_ms": 36.915,
+      "mean_latency_ms": 35.586,
       "failure_reasons": {
         "invalid_signature": 8
       },
@@ -1241,7 +1241,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.1375,
-      "mean_latency_ms": 11.056,
+      "mean_latency_ms": 10.584,
       "failure_reasons": {
         "invalid_signature": 5
       },
@@ -1264,7 +1264,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.1625,
-      "mean_latency_ms": 10.454,
+      "mean_latency_ms": 10.979,
       "failure_reasons": {
         "invalid_signature": 5
       },
@@ -1287,7 +1287,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.05,
-      "mean_latency_ms": 10.284,
+      "mean_latency_ms": 9.768,
       "failure_reasons": {
         "model_version_not_allowed": 4
       },
@@ -1310,7 +1310,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.05,
-      "mean_latency_ms": 9.675,
+      "mean_latency_ms": 9.126,
       "failure_reasons": {
         "model_version_not_allowed": 4
       },
@@ -1333,7 +1333,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 2.0,
-      "mean_latency_ms": 19.276,
+      "mean_latency_ms": 18.026,
       "failure_reasons": {
         "model_version_not_allowed": 6
       },
@@ -1356,7 +1356,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 2.0,
-      "mean_latency_ms": 18.277,
+      "mean_latency_ms": 17.828,
       "failure_reasons": {
         "model_version_not_allowed": 6
       },
@@ -1379,7 +1379,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 3.95,
-      "mean_latency_ms": 35.765,
+      "mean_latency_ms": 36.003,
       "failure_reasons": {
         "model_version_not_allowed": 9
       },
@@ -1402,7 +1402,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 4.0,
-      "mean_latency_ms": 36.274,
+      "mean_latency_ms": 35.682,
       "failure_reasons": {
         "model_version_not_allowed": 8
       },
@@ -1425,7 +1425,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.1375,
-      "mean_latency_ms": 11.071,
+      "mean_latency_ms": 10.833,
       "failure_reasons": {
         "model_version_not_allowed": 5
       },
@@ -1448,7 +1448,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.1625,
-      "mean_latency_ms": 10.513,
+      "mean_latency_ms": 10.085,
       "failure_reasons": {
         "model_version_not_allowed": 5
       },
@@ -1471,7 +1471,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.0375,
-      "mean_latency_ms": 29.832,
+      "mean_latency_ms": 29.495,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -1492,7 +1492,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.0625,
-      "mean_latency_ms": 49.865,
+      "mean_latency_ms": 49.688,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -1513,7 +1513,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 2.075,
-      "mean_latency_ms": 44.521,
+      "mean_latency_ms": 44.077,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -1534,7 +1534,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 2.05,
-      "mean_latency_ms": 65.281,
+      "mean_latency_ms": 64.453,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -1555,7 +1555,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 4.0375,
-      "mean_latency_ms": 86.356,
+      "mean_latency_ms": 84.922,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -1576,7 +1576,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 4.0125,
-      "mean_latency_ms": 88.797,
+      "mean_latency_ms": 87.507,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -1597,7 +1597,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.1375,
-      "mean_latency_ms": 30.612,
+      "mean_latency_ms": 30.333,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -1618,7 +1618,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.1375,
-      "mean_latency_ms": 54.104,
+      "mean_latency_ms": 53.427,
       "failure_reasons": {},
       "expectation": "n/a"
     },
@@ -1639,7 +1639,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.05,
-      "mean_latency_ms": 9.92,
+      "mean_latency_ms": 9.324,
       "failure_reasons": {
         "task_id_mismatch": 1,
         "invalid_signature": 1
@@ -1663,7 +1663,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.0625,
-      "mean_latency_ms": 10.076,
+      "mean_latency_ms": 9.254,
       "failure_reasons": {
         "stale_timestamp": 2,
         "model_version_not_allowed": 2
@@ -1687,7 +1687,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 2.0125,
-      "mean_latency_ms": 18.489,
+      "mean_latency_ms": 17.486,
       "failure_reasons": {
         "task_id_mismatch": 1,
         "invalid_signature": 1,
@@ -1712,7 +1712,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 2.0125,
-      "mean_latency_ms": 18.617,
+      "mean_latency_ms": 17.404,
       "failure_reasons": {
         "stale_timestamp": 2,
         "model_version_not_allowed": 2
@@ -1736,7 +1736,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 3.95,
-      "mean_latency_ms": 37.556,
+      "mean_latency_ms": 35.293,
       "failure_reasons": {
         "model_version_not_allowed": 3,
         "invalid_signature": 2,
@@ -1762,7 +1762,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 3.975,
-      "mean_latency_ms": 36.783,
+      "mean_latency_ms": 35.166,
       "failure_reasons": {
         "stale_timestamp": 3,
         "model_version_not_allowed": 2,
@@ -1788,7 +1788,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.1375,
-      "mean_latency_ms": 10.667,
+      "mean_latency_ms": 10.814,
       "failure_reasons": {
         "task_id_mismatch": 1,
         "invalid_signature": 1,
@@ -1813,7 +1813,7 @@
       "completion_rate": 1.0,
       "wrong_results_served": 0,
       "mean_cost_units": 1.1625,
-      "mean_latency_ms": 10.281,
+      "mean_latency_ms": 10.218,
       "failure_reasons": {
         "stale_timestamp": 2,
         "model_version_not_allowed": 2
