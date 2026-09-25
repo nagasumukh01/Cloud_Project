@@ -1,0 +1,66 @@
+# TrustProof-Cloud - local stack. Everything here is free and open source.
+# NOTE: authored but NOT executed in the development sandbox. Validate with
+#   docker compose config && docker compose up --build
+# before describing it as working (docs/deployment.md A3).
+
+services:
+  api:
+    build: .
+    image: trustproof-cloud:0.2.0
+    container_name: tpc-api
+    ports:
+      - "8000:8000"
+    environment:
+      TPC_ENV: docker
+      TPC_DATA_DIR: /app/data
+      TPC_DATABASE_URL: sqlite:////app/data/trustproof.db
+      TPC_REQUIRE_AUTH: "${TPC_REQUIRE_AUTH:-true}"
+      TPC_API_KEY: "${TPC_API_KEY:?set TPC_API_KEY in .env before starting}"
+      TPC_ADMIN_API_KEY: "${TPC_ADMIN_API_KEY:?set TPC_ADMIN_API_KEY in .env}"
+      TPC_SEED: "${TPC_SEED:-42}"
+    volumes:
+      - tpc-data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2).status==200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    restart: unless-stopped
+
+  # --- M3 infrastructure. Disabled until the Redis queue adapter exists, so that
+  # `docker compose up` does not start services the code cannot yet use.
+  # Enable with:  docker compose --profile m3 up
+  redis:
+    image: redis:7-alpine
+    container_name: tpc-redis
+    profiles: ["m3"]
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - tpc-redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  minio:
+    image: minio/minio:latest
+    container_name: tpc-minio
+    profiles: ["m3"]
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: "${MINIO_ACCESS_KEY:?set MINIO_ACCESS_KEY in .env}"
+      MINIO_ROOT_PASSWORD: "${MINIO_SECRET_KEY:?set MINIO_SECRET_KEY in .env}"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - tpc-minio:/data
+
+volumes:
+  tpc-data:
+  tpc-redis:
+  tpc-minio:
