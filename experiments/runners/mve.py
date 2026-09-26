@@ -219,12 +219,12 @@ def main() -> int:
 
     RESULTS_DIR.mkdir(parents=True, exist_ok=True)
     json_path = RESULTS_DIR / f"{exp_id}.json"
-    json_path.write_text(json.dumps(asdict(report), indent=2))
+    json_path.write_text(json.dumps(asdict(report), indent=2), encoding="utf-8")
 
     import csv
 
     csv_path = RESULTS_DIR / f"{exp_id}.csv"
-    with csv_path.open("w", newline="") as fh:
+    with csv_path.open("w", newline="", encoding="utf-8") as fh:
         writer = csv.DictWriter(fh, fieldnames=list(report.arms[0].keys()))
         writer.writeheader()
         writer.writerows(report.arms)

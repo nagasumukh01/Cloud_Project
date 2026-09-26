@@ -23,7 +23,7 @@ DECISION_MODULES = [
 
 
 def _names_used(path: Path) -> set[str]:
-    tree = ast.parse(path.read_text())
+    tree = ast.parse(path.read_text(encoding="utf-8"))
     names = set()
     for node in ast.walk(tree):
         if isinstance(node, ast.Name):
@@ -45,7 +45,7 @@ def test_scheduler_only_writes_ground_truth_never_reads_it():
     """The scheduler may *record* injector labels for later evaluation (inside `_persist`), but no
     scheduling or verification decision may branch on them. We therefore exempt `_persist` and
     assert the label appears in no control-flow construct anywhere else in the module."""
-    src = (REPO_ROOT / "services/scheduler/scheduler.py").read_text()
+    src = (REPO_ROOT / "services/scheduler/scheduler.py").read_text(encoding="utf-8")
     tree = ast.parse(src)
 
     persist_nodes = {
@@ -70,7 +70,7 @@ def test_decision_modules_do_not_seed_global_random():
     """Global `random.seed()` in library code would silently couple unrelated components and make
     experiment seeding a lie. Randomness must be injected as an explicit Random instance."""
     for rel in DECISION_MODULES + ["services/scheduler/scheduler.py"]:
-        src = (REPO_ROOT / rel).read_text()
+        src = (REPO_ROOT / rel).read_text(encoding="utf-8")
         assert "random.seed(" not in src, f"{rel} seeds the global RNG"
 
 
@@ -148,7 +148,7 @@ def test_documentation_contains_no_novelty_or_patent_claims():
 
     offenders = []
     for doc in list(REPO_ROOT.glob("*.md")) + list((REPO_ROOT / "docs").glob("*.md")):
-        for lineno, line in enumerate(doc.read_text().lower().splitlines(), 1):
+        for lineno, line in enumerate(doc.read_text(encoding="utf-8").lower().splitlines(), 1):
             for phrase in banned:
                 if phrase in line and not any(n in line for n in negations):
                     offenders.append(f"{doc.name}:{lineno}: {phrase!r} -> {line.strip()[:100]}")

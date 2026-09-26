@@ -264,5 +264,5 @@ def test_experiment_configs_are_valid_json():
     files = list(cfg_dir.glob("*.json"))
     assert files, "experiment configs must exist"
     for f in files:
-        data = json.loads(f.read_text())
+        data = json.loads(f.read_text(encoding="utf-8"))
         assert "experiment" in data and "description" in data

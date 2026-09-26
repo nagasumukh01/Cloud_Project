@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TrustProof-Cloud API Gateway & Control Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            brand: { 50: '#ecfdf5', 400: '#34d399', 500: '#10b981', 600: '#059669' },
+            dark: { 950: '#090b10', 900: '#0f131a', 850: '#151a24', 800: '#1c2331', 700: '#2a3449' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    code, pre, .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .grid-cell { aspect-ratio: 1 / 1; transition: background-color 0.15s ease, transform 0.1s ease; }
+    .grid-cell:hover { transform: scale(1.08); }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f131a; }
+    ::-webkit-scrollbar-thumb { background: #2a3449; border-radius: 3px; }
+  </style>
+</head>
+<body class="bg-dark-950 text-slate-100 min-h-screen antialiased flex flex-col selection:bg-brand-500 selection:text-white">
+
+  <header class="border-b border-dark-800 bg-dark-900/80 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-emerald-400 flex items-center justify-center shadow-lg shadow-brand-500/20 text-dark-950 font-bold text-lg">TP</div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-bold text-lg tracking-tight">TrustProof-Cloud</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-brand-500/10 text-brand-400 border border-brand-500/20 font-mono">v0.2.0-M2</span>
+          </div>
+          <p class="text-xs text-slate-400 hidden sm:block">Risk-Adaptive Cryptographically Verifiable ML Inference</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3 text-xs">
+        <div id="badge-system" class="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-dark-800 border border-dark-700">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="system-status-text" class="text-slate-300">Operational</span>
+        </div>
+        <div class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-dark-800 border border-dark-700 text-slate-300 font-mono">
+          <span>Active Workers:</span>
+          <span id="active-workers-count" class="text-brand-400 font-semibold">4 / 4</span>
+        </div>
+        <a href="/docs" target="_blank" class="px-3 py-1.5 rounded-lg bg-dark-800 hover:bg-dark-700 border border-dark-700 text-slate-300 hover:text-white transition flex items-center gap-1.5 font-medium">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+          Swagger API
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <section class="border-b border-dark-800 bg-gradient-to-b from-dark-900 via-dark-950 to-dark-950 py-6 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white flex items-center gap-3">
+            TrustProof-Cloud API Gateway
+            <span class="text-xs font-normal px-2.5 py-1 rounded-md bg-blue-500/10 text-blue-400 border border-blue-500/20">Interactive Lab</span>
+          </h1>
+          <p class="mt-1 text-sm text-slate-400 max-w-3xl">
+            Offload machine learning inference to untrusted distributed workers with cryptographic integrity (Ed25519 signed envelopes) and risk-adaptive verification.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2 text-xs font-mono">
+          <div class="px-3 py-2 rounded-lg bg-dark-850 border border-dark-700">
+            <span class="text-slate-400 block">Model</span>
+            <span class="text-emerald-400 font-semibold" id="model-version">digits-logreg@1.0.0</span>
+          </div>
+          <div class="px-3 py-2 rounded-lg bg-dark-850 border border-dark-700">
+            <span class="text-slate-400 block">Features</span>
+            <span class="text-white font-semibold">64 (8x8 Digits)</span>
+          </div>
+          <div class="px-3 py-2 rounded-lg bg-dark-850 border border-dark-700">
+            <span class="text-slate-400 block">Accuracy</span>
+            <span class="text-blue-400 font-semibold" id="model-acc">97.2%</span>
+          </div>
+        </div>
+      </div>
+
+      <nav class="flex gap-2 mt-6 overflow-x-auto pb-1" id="nav-tabs">
+        <button onclick="switchTab('tab-sandbox')" class="tab-btn active px-4 py-2 rounded-lg text-sm font-semibold bg-brand-500 text-dark-950 shadow-md transition flex items-center gap-2" data-tab="tab-sandbox">
+          <span>🎨</span> Inference Sandbox
+        </button>
+        <button onclick="switchTab('tab-attacks')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-dark-850 text-slate-300 hover:text-white hover:bg-dark-800 border border-dark-700 transition flex items-center gap-2" data-tab="tab-attacks">
+          <span>🛡️</span> Attack Simulator
+        </button>
+        <button onclick="switchTab('tab-workers')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-dark-850 text-slate-300 hover:text-white hover:bg-dark-800 border border-dark-700 transition flex items-center gap-2" data-tab="tab-workers">
+          <span>👥</span> Worker Trust Pool
+        </button>
+        <button onclick="switchTab('tab-merkle')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-dark-850 text-slate-300 hover:text-white hover:bg-dark-800 border border-dark-700 transition flex items-center gap-2" data-tab="tab-merkle">
+          <span>🌳</span> Merkle Batch Audit
+        </button>
+        <button onclick="switchTab('tab-architecture')" class="tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-dark-850 text-slate-300 hover:text-white hover:bg-dark-800 border border-dark-700 transition flex items-center gap-2" data-tab="tab-architecture">
+          <span>⚙️</span> How It Works
+        </button>
+      </nav>
+    </div>
+  </section>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+    <!-- TAB 1: SANDBOX -->
+    <div id="tab-sandbox" class="tab-pane block space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-6 bg-dark-900 border border-dark-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                  <span>8x8 Digit Input</span>
+                  <span class="text-xs px-2 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/20 font-mono">64 Features</span>
+                </h2>
+                <p class="text-xs text-slate-400">Click or drag cells to draw a handwritten digit, or click a preset below.</p>
+              </div>
+              <button onclick="clearGrid()" class="px-2.5 py-1 text-xs rounded bg-dark-800 hover:bg-dark-700 border border-dark-700 text-slate-300 transition">Clear</button>
+            </div>
+            <div class="flex justify-center my-4">
+              <div id="pixel-grid" class="grid grid-cols-8 gap-1.5 p-3 bg-dark-950 border border-dark-700 rounded-xl w-72 max-w-full shadow-inner select-none cursor-crosshair"></div>
+            </div>
+            <div class="space-y-2 mt-4">
+              <span class="text-xs font-semibold text-slate-400 block uppercase tracking-wider">Load Digit Preset:</span>
+              <div class="grid grid-cols-5 sm:grid-cols-10 gap-1.5">
+                <button onclick="loadPreset(0)" class="py-1.5 text-xs font-bold rounded bg-dark-800 hover:bg-brand-500 hover:text-dark-950 border border-dark-700 transition">0</button>
+                <button onclick="loadPreset(1)" class="py-1.5 text-xs font-bold rounded bg-dark-800 hover:bg-brand-500 hover:text-dark-950 border border-dark-700 transition">1</button>
+                <button onclick="loadPreset(2)" class="py-1.5 text-xs font-bold rounded bg-dark-800 hover:bg-brand-500 hover:text-dark-950 border border-dark-700 transition">2</button>
+                <button onclick="loadPreset(3)" class="py-1.5 text-xs font-bold rounded bg-dark-800 hover:bg-brand-500 hover:text-dark-950 border border-dark-700 transition">3</button>
+                <button onclick="loadPreset(4)" class="py-1.5 text-xs font-bold rounded bg-dark-800 hover:bg-brand-500 hover:text-dark-950 border border-dark-700 transition">4</button>
+                <button onclick="loadPreset(5)" class="py-1.5 text-xs font-bold rounded bg-dark-800 hover:bg-brand-500 hover:text-dark-950 border border-dark-700 transition">5</button>
+                <button onclick="loadPreset(6)" class="py-1.5 text-xs font-bold rounded bg-dark-800 hover:bg-brand-500 hover:text-dark-950 border border-dark-700 transition">6</button>
+                <button onclick="loadPreset(7)" class="py-1.5 text-xs font-bold rounded bg-dark-800 hover:bg-brand-500 hover:text-dark-950 border border-dark-700 transition">7</button>
+                <button onclick="loadPreset(8)" class="py-1.5 text-xs font-bold rounded bg-dark-800 hover:bg-brand-500 hover:text-dark-950 border border-dark-700 transition">8</button>
+                <button onclick="loadPreset(9)" class="py-1.5 text-xs font-bold rounded bg-dark-800 hover:bg-brand-500 hover:text-dark-950 border border-dark-700 transition">9</button>
+              </div>
+            </div>
+          </div>
+          <div class="mt-6 pt-5 border-t border-dark-800 space-y-4">
+            <div class="flex items-center justify-between">
+              <label class="text-xs font-semibold text-slate-300">Task Sensitivity:</label>
+              <div class="flex gap-2">
+                <button type="button" onclick="setSensitivity('low')" id="sens-low" class="sens-btn px-3 py-1 rounded text-xs font-medium bg-dark-800 border border-dark-700 text-slate-300">Low</button>
+                <button type="button" onclick="setSensitivity('medium')" id="sens-med" class="sens-btn px-3 py-1 rounded text-xs font-bold bg-brand-500 text-dark-950 border border-brand-400">Medium</button>
+                <button type="button" onclick="setSensitivity('high')" id="sens-high" class="sens-btn px-3 py-1 rounded text-xs font-medium bg-dark-800 border border-dark-700 text-slate-300">High</button>
+              </div>
+            </div>
+            <button id="btn-submit-task" onclick="submitInferenceTask()" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-brand-500 to-emerald-400 hover:from-brand-600 hover:to-emerald-500 text-dark-950 font-bold text-sm tracking-wide shadow-lg shadow-brand-500/20 transition flex items-center justify-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              <span>Dispatch Verified Inference Task</span>
+            </button>
+          </div>
+        </div>
+        <div class="lg:col-span-6 bg-dark-900 border border-dark-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="text-lg font-bold text-white">Inference & Verification Outcome</h2>
+              <span id="result-status-badge" class="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 border border-dark-700 font-mono">Idle</span>
+            </div>
+            <div class="grid grid-cols-3 gap-3 p-4 bg-dark-950 border border-dark-800 rounded-xl text-center">
+              <div class="p-3 bg-dark-900/60 rounded-lg border border-dark-800">
+                <span class="text-xs text-slate-400 block mb-1">Predicted Digit</span>
+                <span id="res-label" class="text-4xl font-extrabold text-brand-400 font-mono">-</span>
+              </div>
+              <div class="p-3 bg-dark-900/60 rounded-lg border border-dark-800">
+                <span class="text-xs text-slate-400 block mb-1">Model Confidence</span>
+                <span id="res-confidence" class="text-2xl font-bold text-white font-mono mt-1 block">-</span>
+              </div>
+              <div class="p-3 bg-dark-900/60 rounded-lg border border-dark-800">
+                <span class="text-xs text-slate-400 block mb-1">Shannon Entropy</span>
+                <span id="res-entropy" class="text-2xl font-bold text-slate-300 font-mono mt-1 block">-</span>
+              </div>
+            </div>
+            <div class="mt-4 p-4 bg-dark-950 border border-dark-800 rounded-xl space-y-3">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-semibold text-slate-300">Policy Risk Score:</span>
+                <span id="res-risk-score" class="font-mono text-brand-400 font-bold text-sm">0.0000</span>
+              </div>
+              <div class="w-full bg-dark-800 rounded-full h-2.5 overflow-hidden relative">
+                <div id="risk-bar" class="bg-brand-500 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
+              </div>
+              <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+                <span>0.00 (Safe)</span>
+                <span>tau_low (0.25)</span>
+                <span>tau_high (0.65)</span>
+                <span>1.00 (Critical)</span>
+              </div>
+              <div class="grid grid-cols-2 gap-2 text-xs pt-1">
+                <div class="p-2 bg-dark-900 rounded border border-dark-800">
+                  <span class="text-slate-400 text-[11px] block">Policy Decision:</span>
+                  <span id="res-decision" class="font-mono text-white font-semibold">accept</span>
+                </div>
+                <div class="p-2 bg-dark-900 rounded border border-dark-800">
+                  <span class="text-slate-400 text-[11px] block">Replicas Allocated:</span>
+                  <span id="res-replicas" class="font-mono text-white font-semibold">0</span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-4 p-4 bg-dark-950 border border-dark-800 rounded-xl space-y-2 text-xs font-mono">
+              <div class="flex justify-between text-slate-300 pb-1 border-b border-dark-850">
+                <span class="text-slate-400">Task ID:</span>
+                <span id="res-task-id" class="text-slate-200">-</span>
+              </div>
+              <div class="flex justify-between text-slate-300 pb-1 border-b border-dark-850">
+                <span class="text-slate-400">Executed By Worker:</span>
+                <span id="res-worker" class="text-brand-400 font-semibold">-</span>
+              </div>
+              <div class="flex justify-between text-slate-300 pb-1 border-b border-dark-850">
+                <span class="text-slate-400">Execution Latency:</span>
+                <span id="res-latency" class="text-slate-200">- ms</span>
+              </div>
+              <div class="flex justify-between text-slate-300">
+                <span class="text-slate-400">Verification Latency:</span>
+                <span id="res-verif-latency" class="text-emerald-400">- ms</span>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 p-3 bg-brand-500/5 border border-brand-500/20 rounded-xl flex items-center gap-3">
+            <svg class="w-5 h-5 text-brand-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            <p class="text-xs text-slate-300">
+              <strong class="text-brand-300 font-medium">Cryptographic Proof:</strong> Signed with worker's Ed25519 private key; input and output bound via Blake2b-256 and SHA-256.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: ATTACK SIMULATOR -->
+    <div id="tab-attacks" class="tab-pane hidden space-y-6">
+      <div class="bg-dark-900 border border-dark-800 rounded-2xl p-6 shadow-xl">
+        <div class="max-w-3xl mb-6">
+          <h2 class="text-xl font-bold text-white flex items-center gap-2">
+            <span>Fault & Attack Simulator Playground</span>
+            <span class="text-xs px-2 py-0.5 rounded bg-red-500/10 text-red-400 border border-red-500/20">Security Verification</span>
+          </h2>
+          <p class="text-sm text-slate-400 mt-1">
+            Simulate realistic Byzantine faults and adversarial attacks against the TrustProof-Cloud verification pipeline. Test how cryptographic checks reject anomalies instantly.
+          </p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="p-5 bg-dark-950 border border-dark-800 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 flex items-center justify-center font-bold text-lg mb-3">1</div>
+              <h3 class="text-sm font-bold text-white">Payload Tampering</h3>
+              <p class="text-xs text-slate-400 mt-1">Worker signs prediction, but an adversary mutates the classification label in transit.</p>
+            </div>
+            <button onclick="runAttackSimulation('tamper_payload')" class="mt-4 w-full py-2 px-3 rounded-lg bg-dark-800 hover:bg-red-500 hover:text-white border border-dark-700 text-xs font-semibold transition text-slate-300">Execute Attack</button>
+          </div>
+          <div class="p-5 bg-dark-950 border border-dark-800 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-lg bg-orange-500/10 text-orange-400 border border-orange-500/20 flex items-center justify-center font-bold text-lg mb-3">2</div>
+              <h3 class="text-sm font-bold text-white">Signature Forgery</h3>
+              <p class="text-xs text-slate-400 mt-1">Adversary injects a counterfeit signature without holding the worker private key.</p>
+            </div>
+            <button onclick="runAttackSimulation('invalid_sig')" class="mt-4 w-full py-2 px-3 rounded-lg bg-dark-800 hover:bg-orange-500 hover:text-white border border-dark-700 text-xs font-semibold transition text-slate-300">Execute Attack</button>
+          </div>
+          <div class="p-5 bg-dark-950 border border-dark-800 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-lg bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 flex items-center justify-center font-bold text-lg mb-3">3</div>
+              <h3 class="text-sm font-bold text-white">Stale / Replay Attack</h3>
+              <p class="text-xs text-slate-400 mt-1">Adversary replays an old intercepted envelope outside the freshness window.</p>
+            </div>
+            <button onclick="runAttackSimulation('stale_replay')" class="mt-4 w-full py-2 px-3 rounded-lg bg-dark-800 hover:bg-yellow-500 hover:text-dark-950 border border-dark-700 text-xs font-semibold transition text-slate-300">Execute Attack</button>
+          </div>
+          <div class="p-5 bg-dark-950 border border-dark-800 rounded-xl flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20 flex items-center justify-center font-bold text-lg mb-3">4</div>
+              <h3 class="text-sm font-bold text-white">Unauthorized Model</h3>
+              <p class="text-xs text-slate-400 mt-1">Worker executes an unapproved or backdoored model version (`unauthorized@9.9.9`).</p>
+            </div>
+            <button onclick="runAttackSimulation('wrong_model')" class="mt-4 w-full py-2 px-3 rounded-lg bg-dark-800 hover:bg-purple-500 hover:text-white border border-dark-700 text-xs font-semibold transition text-slate-300">Execute Attack</button>
+          </div>
+        </div>
+        <div class="mt-6 p-5 bg-dark-950 border border-dark-800 rounded-xl">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Attack Analysis Output</span>
+            <span id="attack-status" class="text-xs font-mono px-2 py-0.5 rounded bg-dark-800 text-slate-400">Awaiting simulation</span>
+          </div>
+          <div id="attack-output" class="font-mono text-xs text-slate-300 bg-dark-900 p-4 rounded-lg border border-dark-800 overflow-x-auto min-h-[120px] flex items-center justify-center text-slate-500">
+            Click any "Execute Attack" button above to observe cryptographic rejection live.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: WORKER TRUST POOL -->
+    <div id="tab-workers" class="tab-pane hidden space-y-6">
+      <div class="bg-dark-900 border border-dark-800 rounded-2xl p-6 shadow-xl">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-xl font-bold text-white">Distributed Worker Pool & Trust Engine</h2>
+            <p class="text-sm text-slate-400 mt-1">Workers hold individual Ed25519 keys; registry tracks trust score (EWMA), status, and failure counters.</p>
+          </div>
+          <button onclick="fetchWorkers()" class="px-3 py-1.5 rounded-lg bg-dark-800 hover:bg-dark-700 border border-dark-700 text-xs font-medium text-slate-300 transition">Refresh Pool</button>
+        </div>
+        <div id="workers-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+      </div>
+    </div>
+
+    <!-- TAB 4: MERKLE BATCH AUDIT -->
+    <div id="tab-merkle" class="tab-pane hidden space-y-6">
+      <div class="bg-dark-900 border border-dark-800 rounded-2xl p-6 shadow-xl">
+        <div class="max-w-3xl mb-6">
+          <h2 class="text-xl font-bold text-white">RFC-6962 Merkle Batch Auditing</h2>
+          <p class="text-sm text-slate-400 mt-1">Batch audit verification results using binary Merkle trees with domain-separated hashing.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="p-5 bg-dark-950 border border-dark-800 rounded-xl space-y-3">
+            <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Pending Batch Envelopes</span>
+            <span id="merkle-pending" class="text-4xl font-extrabold text-white font-mono block">0</span>
+            <p class="text-xs text-slate-400">Tasks verified since previous root seal.</p>
+            <button onclick="sealMerkleBatch()" class="w-full mt-2 py-2.5 px-4 rounded-lg bg-brand-500 hover:bg-brand-600 text-dark-950 font-bold text-xs shadow-md transition">Seal Merkle Batch Root</button>
+          </div>
+          <div class="md:col-span-2 p-5 bg-dark-950 border border-dark-800 rounded-xl space-y-3 flex flex-col justify-between">
+            <div>
+              <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block">Latest Committed Merkle Root</span>
+              <p id="merkle-root-display" class="font-mono text-xs text-brand-400 bg-dark-900 p-3 rounded border border-dark-800 break-all select-all mt-2">none (seal a batch or run tasks to generate)</p>
+            </div>
+            <div class="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-dark-850">
+              <span>Sealed Leaves: <strong id="merkle-leaves" class="text-white font-mono">0</strong></span>
+              <span>Seal Latency: <strong id="merkle-seal-lat" class="text-white font-mono">0.0 ms</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: HOW IT WORKS -->
+    <div id="tab-architecture" class="tab-pane hidden space-y-6">
+      <div class="bg-dark-900 border border-dark-800 rounded-2xl p-6 shadow-xl space-y-6">
+        <div>
+          <h2 class="text-xl font-bold text-white">TrustProof-Cloud System Architecture</h2>
+          <p class="text-sm text-slate-400 mt-1">Understanding the distinction between Cryptographic Integrity and Computational Correctness.</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="p-5 bg-dark-950 border border-dark-800 rounded-xl space-y-3">
+            <h3 class="text-sm font-bold text-emerald-400">1. Cryptographic Integrity (What Crypto Solves)</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">Every inference result is wrapped in an Ed25519-signed envelope binding task_id, worker_id, model_version, input_commitment (BLAKE2b-256), result_hash (SHA-256), and timestamp/nonce for replay protection.</p>
+          </div>
+          <div class="p-5 bg-dark-950 border border-dark-800 rounded-xl space-y-3">
+            <h3 class="text-sm font-bold text-blue-400">2. Computational Correctness (What Policy Solves)</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">A worker with a valid private key can sign a wrong answer. Rather than replicating everything, the engine computes risk R in [0, 1] and allocates verification budget dynamically:</p>
+            <div class="p-3 bg-dark-900 rounded font-mono text-[11px] text-slate-300 space-y-1">
+              <div>R &lt; 0.25 (tau_low)  &rarr; <span class="text-emerald-400">Accept unverified (cost = 1.0)</span></div>
+              <div>R &lt; 0.65 (tau_high) &rarr; <span class="text-yellow-400">1 independent verification (cost = 2.0)</span></div>
+              <div>R &ge; 0.65            &rarr; <span class="text-red-400">N replicas / Quarantine (cost &ge; 3.0)</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="border-t border-dark-800 bg-dark-950 py-6 text-xs text-slate-500 text-center">
+    <div class="max-w-7xl mx-auto px-4">
+      TrustProof-Cloud &middot; Research Prototype &middot; CPU-only &middot; No external network required &middot; 
+      <a href="/docs" class="text-brand-400 hover:underline">API Docs</a>
+    </div>
+  </footer>
+
+  <script>
+    let currentSensitivity = 'medium';
+    let gridPixels = new Array(64).fill(0.0);
+    let samplePresets = {};
+
+    function initGrid() {
+      const container = document.getElementById('pixel-grid');
+      container.innerHTML = '';
+      for (let i = 0; i < 64; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'grid-cell rounded-sm bg-dark-850 border border-dark-750 cursor-pointer';
+        cell.id = `cell-${i}`;
+        cell.addEventListener('mousedown', (e) => togglePixel(i, e));
+        cell.addEventListener('mouseenter', (e) => { if (e.buttons === 1) setPixel(i, 1.0); });
+        container.appendChild(cell);
+      }
+    }
+
+    function togglePixel(i, e) {
+      gridPixels[i] = gridPixels[i] > 0.3 ? 0.0 : 1.0;
+      updatePixelView(i);
+    }
+
+    function setPixel(i, val) {
+      gridPixels[i] = val;
+      updatePixelView(i);
+    }
+
+    function updatePixelView(i) {
+      const el = document.getElementById(`cell-${i}`);
+      const val = gridPixels[i];
+      if (val === 0) {
+        el.style.backgroundColor = '#151a24';
+      } else {
+        const intensity = Math.round(val * 255);
+        el.style.backgroundColor = `rgb(${intensity}, ${intensity}, ${intensity})`;
+      }
+    }
+
+    function clearGrid() {
+      gridPixels.fill(0.0);
+      for (let i = 0; i < 64; i++) updatePixelView(i);
+    }
+
+    function setSensitivity(sens) {
+      currentSensitivity = sens;
+      ['low', 'med', 'high'].forEach(s => {
+        const btn = document.getElementById(`sens-${s}`);
+        if ((s === 'low' && sens === 'low') || (s === 'med' && sens === 'medium') || (s === 'high' && sens === 'high')) {
+          btn.className = 'sens-btn px-3 py-1 rounded text-xs font-bold bg-brand-500 text-dark-950 border border-brand-400';
+        } else {
+          btn.className = 'sens-btn px-3 py-1 rounded text-xs font-medium bg-dark-800 border border-dark-700 text-slate-300';
+        }
+      });
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('block'));
+      document.getElementById(tabId).classList.remove('hidden');
+      document.getElementById(tabId).classList.add('block');
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        if (btn.getAttribute('data-tab') === tabId) {
+          btn.className = 'tab-btn active px-4 py-2 rounded-lg text-sm font-semibold bg-brand-500 text-dark-950 shadow-md transition flex items-center gap-2';
+        } else {
+          btn.className = 'tab-btn px-4 py-2 rounded-lg text-sm font-medium bg-dark-850 text-slate-300 hover:text-white hover:bg-dark-800 border border-dark-700 transition flex items-center gap-2';
+        }
+      });
+
+      if (tabId === 'tab-workers') fetchWorkers();
+      if (tabId === 'tab-merkle') fetchMerkleInfo();
+    }
+
+    async function loadPresets() {
+      try {
+        const res = await fetch('/samples');
+        if (res.ok) {
+          samplePresets = await res.json();
+          loadPreset(0);
+        }
+      } catch (err) {
+        console.warn('Could not load samples:', err);
+      }
+    }
+
+    function loadPreset(digit) {
+      if (samplePresets[digit]) {
+        const raw = samplePresets[digit];
+        const maxVal = Math.max(...raw) || 16.0;
+        for (let i = 0; i < 64; i++) {
+          gridPixels[i] = raw[i] / maxVal;
+          updatePixelView(i);
+        }
+      }
+    }
+
+    async function submitInferenceTask() {
+      const btn = document.getElementById('btn-submit-task');
+      btn.disabled = true;
+      btn.classList.add('opacity-75');
+
+      const statusBadge = document.getElementById('result-status-badge');
+      statusBadge.innerText = 'Processing...';
+      statusBadge.className = 'text-xs px-2.5 py-1 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 font-mono animate-pulse';
+
+      try {
+        const features = gridPixels.map(p => p * 16.0);
+        const res = await fetch('/tasks', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            features: features,
+            sensitivity: currentSensitivity
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          document.getElementById('res-label').innerText = data.result.label;
+          document.getElementById('res-confidence').innerText = (data.result.confidence * 100).toFixed(1) + '%';
+          document.getElementById('res-entropy').innerText = data.result.entropy.toFixed(4);
+
+          document.getElementById('res-risk-score').innerText = data.risk_score.toFixed(4);
+          const riskPct = Math.min(100, Math.max(0, data.risk_score * 100));
+          const bar = document.getElementById('risk-bar');
+          bar.style.width = `${riskPct}%`;
+          if (data.risk_score < 0.25) {
+            bar.className = 'bg-brand-500 h-2.5 rounded-full transition-all duration-500';
+          } else if (data.risk_score < 0.65) {
+            bar.className = 'bg-yellow-400 h-2.5 rounded-full transition-all duration-500';
+          } else {
+            bar.className = 'bg-red-500 h-2.5 rounded-full transition-all duration-500';
+          }
+
+          document.getElementById('res-decision').innerText = data.verification_decision;
+          document.getElementById('res-replicas').innerText = data.replicas_used;
+
+          document.getElementById('res-task-id').innerText = data.task_id.substring(0, 13) + '...';
+          document.getElementById('res-worker').innerText = data.executed_by.join(', ');
+          document.getElementById('res-latency').innerText = data.latency_ms.toFixed(2) + ' ms';
+          document.getElementById('res-verif-latency').innerText = data.verification_latency_ms.toFixed(3) + ' ms';
+
+          statusBadge.innerText = data.verdict.toUpperCase();
+          statusBadge.className = 'text-xs px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono';
+        } else {
+          statusBadge.innerText = 'ERROR';
+          statusBadge.className = 'text-xs px-2.5 py-1 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 font-mono';
+          alert('Task submission error: ' + JSON.stringify(data.detail));
+        }
+      } catch (e) {
+        alert('Network error connecting to API: ' + e);
+      } finally {
+        btn.disabled = false;
+        btn.classList.remove('opacity-75');
+      }
+    }
+
+    async function runAttackSimulation(attackType) {
+      const output = document.getElementById('attack-output');
+      const statusEl = document.getElementById('attack-status');
+      statusEl.innerText = 'Attacking...';
+      statusEl.className = 'text-xs font-mono px-2 py-0.5 rounded bg-yellow-500/10 text-yellow-400 animate-pulse';
+
+      try {
+        const res = await fetch(`/simulation/attack?attack_type=${attackType}`, { method: 'POST' });
+        const data = await res.json();
+        
+        if (data.detected) {
+          statusEl.innerText = 'ATTACK BLOCKED';
+          statusEl.className = 'text-xs font-mono px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30';
+        } else {
+          statusEl.innerText = 'FAILED TO CATCH';
+          statusEl.className = 'text-xs font-mono px-2 py-0.5 rounded bg-red-500/20 text-red-400 font-bold border border-red-500/30';
+        }
+
+        output.innerHTML = `
+          <div class="space-y-2 w-full">
+            <div class="flex items-center justify-between pb-2 border-b border-dark-800">
+              <span class="text-white font-bold">Attack Scenario: <span class="text-yellow-400">${data.attack}</span></span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold ${data.detected ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}">
+                ${data.detected ? 'CAUGHT & REJECTED' : 'UNDETECTED'}
+              </span>
+            </div>
+            <div><strong>Failure Reason Code:</strong> <code class="text-red-400">${data.reason}</code></div>
+            <div><strong>Mechanism Rationale:</strong> <span class="text-slate-300">${data.explanation}</span></div>
+            <div class="pt-2"><strong>Verification Steps:</strong>
+              <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 mt-1">
+                ${Object.entries(data.checks || {}).map(([k, v]) => `
+                  <div class="p-1.5 rounded bg-dark-950 border border-dark-800 text-[10px]">
+                    <span class="text-slate-400 block">${k}:</span>
+                    <span class="${v ? 'text-emerald-400 font-bold' : 'text-red-400 font-bold'}">${v ? 'PASS' : 'FAIL'}</span>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      } catch (err) {
+        output.innerText = 'Error running attack simulation: ' + err;
+      }
+    }
+
+    async function fetchWorkers() {
+      const container = document.getElementById('workers-grid');
+      try {
+        const res = await fetch('/workers');
+        const workers = await res.json();
+        document.getElementById('active-workers-count').innerText = `${workers.filter(w => w.status === 'active').length} / ${workers.length}`;
+        
+        container.innerHTML = workers.map(w => {
+          const isActive = w.status === 'active';
+          return `
+            <div class="p-5 bg-dark-950 border border-dark-800 rounded-xl flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <span class="font-mono font-bold text-white text-base">${w.worker_id}</span>
+                  <span class="px-2 py-0.5 rounded text-[11px] font-semibold font-mono ${isActive ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'}">
+                    ${w.status}
+                  </span>
+                </div>
+                
+                <div class="space-y-2 text-xs">
+                  <div>
+                    <div class="flex justify-between text-slate-400 mb-1">
+                      <span>Trust Score (EWMA):</span>
+                      <span class="text-brand-400 font-bold font-mono">${w.trust_score.toFixed(3)}</span>
+                    </div>
+                    <div class="w-full bg-dark-800 rounded-full h-1.5 overflow-hidden">
+                      <div class="bg-brand-500 h-1.5 rounded-full" style="width: ${Math.round(w.trust_score * 100)}%"></div>
+                    </div>
+                  </div>
+
+                  <div class="pt-2 text-slate-400 font-mono text-[11px] space-y-1">
+                    <div class="flex justify-between"><span>Completed:</span> <span class="text-white">${w.tasks_completed}</span></div>
+                    <div class="flex justify-between"><span>Failures:</span> <span class="text-white">${w.failures}</span></div>
+                    <div class="flex justify-between"><span>Integrity Violations:</span> <span class="${w.verification_failures ? 'text-red-400 font-bold' : 'text-slate-300'}">${w.verification_failures}</span></div>
+                    <div class="flex justify-between"><span>Latency EWMA:</span> <span class="text-slate-300">${w.mean_latency_ms.toFixed(1)} ms</span></div>
+                    <div class="text-[10px] text-slate-500 truncate mt-1" title="${w.public_key_fingerprint}">Key: ${w.public_key_fingerprint}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="mt-4 pt-3 border-t border-dark-850 flex gap-2">
+                ${isActive ? `
+                  <button onclick="quarantineWorker('${w.worker_id}')" class="w-full py-1.5 px-2 rounded bg-dark-800 hover:bg-yellow-500/20 hover:text-yellow-400 border border-dark-700 text-slate-400 text-xs font-medium transition">
+                    Quarantine
+                  </button>
+                ` : `
+                  <button onclick="releaseWorker('${w.worker_id}')" class="w-full py-1.5 px-2 rounded bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 border border-emerald-500/30 text-xs font-semibold transition">
+                    Release
+                  </button>
+                `}
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (e) {
+        console.error('Error fetching workers:', e);
+      }
+    }
+
+    async function quarantineWorker(workerId) {
+      if (!confirm(`Quarantine worker ${workerId}?`)) return;
+      await fetch(`/workers/${workerId}/quarantine`, { method: 'POST' });
+      fetchWorkers();
+    }
+
+    async function releaseWorker(workerId) {
+      await fetch(`/workers/${workerId}/release`, { method: 'POST' });
+      fetchWorkers();
+    }
+
+    async function fetchMerkleInfo() {
+      try {
+        const res = await fetch('/verification/batch/root');
+        const data = await res.json();
+        document.getElementById('merkle-pending').innerText = data.pending_leaves ?? 0;
+      } catch (err) {
+        console.warn('Merkle fetch error:', err);
+      }
+    }
+
+    async function sealMerkleBatch() {
+      try {
+        const res = await fetch('/verification/batch/root?seal=true');
+        const data = await res.json();
+        document.getElementById('merkle-root-display').innerText = data.merkle_root;
+        document.getElementById('merkle-leaves').innerText = data.leaves;
+        document.getElementById('merkle-seal-lat').innerText = data.seal_latency_ms.toFixed(2) + ' ms';
+        document.getElementById('merkle-pending').innerText = '0';
+      } catch (err) {
+        alert('Error sealing Merkle batch: ' + err);
+      }
+    }
+
+    async function checkHealth() {
+      try {
+        const res = await fetch('/health');
+        const data = await res.json();
+        document.getElementById('system-status-text').innerText = data.status.toUpperCase();
+        document.getElementById('active-workers-count').innerText = `${data.workers_active} Active`;
+      } catch (e) {
+        document.getElementById('system-status-text').innerText = 'OFFLINE';
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initGrid();
+      loadPresets();
+      checkHealth();
+      fetchWorkers();
+    });
+  </script>
+</body>
+</html>

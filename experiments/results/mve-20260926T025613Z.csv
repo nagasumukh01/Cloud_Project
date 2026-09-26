@@ -1,0 +1,7 @@
+arm,seed,tasks,completed,failed,rejected,mean_cost_units,verification_units_per_task,mean_latency_ms,p95_latency_ms,mean_verification_latency_ms,corrupt_attempts,integrity_detections,disagreement_detections,undetected_corruption,detection_recall,false_positive_rate,mean_trust_faulty,mean_trust_honest,wall_clock_s
+no_verification,42,20,20,0,0,1.0,0.0,13.365,16.761,0.8126,1,0,0,1,0.0,0.0,0.745,0.8109,0.43
+fixed_1,42,20,20,0,0,2.0,1.0,24.361,29.562,1.6369,3,2,1,0,1.0,0.0,0.3807,0.8771,0.55
+fixed_3,42,20,20,0,0,3.9,2.9,46.022,53.806,3.0746,5,3,2,0,1.0,0.0,0.3109,0.9533,0.98
+random_spotcheck,42,20,19,1,0,1.45,0.45,17.415,26.424,1.1615,3,2,1,0,1.0,0.0,0.596,0.8143,0.41
+rule_based,42,20,20,0,0,1.0,0.0,12.379,15.781,0.8173,1,0,0,1,0.0,0.0,0.745,0.8109,0.31
+risk_adaptive,42,20,20,0,0,1.2,0.2,16.092,22.921,0.9585,2,1,0,1,0.5,0.0,0.5783,0.826,0.38

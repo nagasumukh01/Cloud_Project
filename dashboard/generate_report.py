@@ -42,7 +42,7 @@ def latest(prefix: str) -> dict | None:
     files = sorted(RESULTS_DIR.glob(f"{prefix}-*.json"))
     if not files:
         return None
-    return json.loads(files[-1].read_text())
+    return json.loads(files[-1].read_text(encoding="utf-8"))
 
 
 def esc(x) -> str:

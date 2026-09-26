@@ -11,6 +11,7 @@ Security posture for M2:
 
 from __future__ import annotations
 
+from pathlib import Path
 import time
 from contextlib import asynccontextmanager
 
@@ -144,6 +145,7 @@ def create_app(n_workers: int = 4, n_faulty: int = 0, policy: str = "risk_adapti
         ) or "<tr><td colspan=4>no workers registered</td></tr>"
 
         endpoints = [
+            ("GET", "/dashboard", "Interactive Frontend Lab (Digit Canvas, Attack Simulator, Worker Pool)"),
             ("GET", "/docs", "Interactive OpenAPI console - submit a task from the browser"),
             ("GET", "/health", "Liveness: worker count, database reachability"),
             ("GET", "/ready", "Readiness: model loaded, workers registered, auth state"),
@@ -345,6 +347,105 @@ production measurements. No security guarantee is claimed beyond the analysis in
         return {"version": sysobj.model.version, "n_features": sysobj.model.n_features,
                 "test_accuracy": sysobj.model.test_accuracy,
                 "weight_digest": sysobj.model.weight_digest}
+
+    @app.get("/samples", tags=["inference"])
+    def samples():
+        """Returns representative 8x8 handwritten digit samples for 0-9."""
+        from sklearn.datasets import load_digits
+        X, y = load_digits(return_X_y=True)
+        res = {}
+        for d in range(10):
+            matches = [i for i, label in enumerate(y) if label == d]
+            if matches:
+                res[str(d)] = X[matches[0]].tolist()
+        return res
+
+    @app.post("/simulation/attack", tags=["simulation"])
+    def simulate_attack(attack_type: str = Query(..., description="tamper_payload, invalid_sig, stale_replay, wrong_model")):
+        """Simulates adversarial behavior and returns cryptographic detection details."""
+        from crypto.signatures import build_envelope, sign_envelope, verify_signed_result, SignedResult
+        from crypto.hashing import input_commitment
+        from ml.inference_model import sample_inputs
+
+        sysobj = _system
+        if not sysobj:
+            raise HTTPException(status_code=503, detail="system not initialised")
+
+        worker = sysobj.workers[0]
+        feats = sample_inputs(1, seed=42)[0]
+        in_comm = input_commitment(feats)
+        signed = worker.execute("attack-task-1", feats, in_comm)
+
+        if attack_type == "tamper_payload":
+            tampered_payload = {**signed.payload, "label": (signed.payload["label"] + 1) % 10}
+            tampered = SignedResult(signed.envelope, signed.signature_hex, tampered_payload)
+            res = verify_signed_result(tampered, public_key_hex=worker.public_key_hex)
+            return {
+                "attack": "tamper_payload",
+                "detected": not res.ok,
+                "reason": res.reason,
+                "explanation": "Worker signed the real inference result, but an adversary mutated the payload. The payload hash no longer matches the committed result_hash in the envelope.",
+                "checks": res.checks,
+            }
+        elif attack_type == "invalid_sig":
+            bad_sig = SignedResult(signed.envelope, "00" * 64, signed.payload)
+            res = verify_signed_result(bad_sig, public_key_hex=worker.public_key_hex)
+            return {
+                "attack": "invalid_sig",
+                "detected": not res.ok,
+                "reason": res.reason,
+                "explanation": "Signature was forged or corrupt; failed Ed25519 elliptic-curve signature verification against worker's registered public key.",
+                "checks": res.checks,
+            }
+        elif attack_type == "stale_replay":
+            env = build_envelope(
+                task_id="stale-task-1",
+                worker_id=worker.worker_id,
+                model_version=worker.model_version,
+                input_commitment=in_comm,
+                payload=signed.payload,
+                timestamp="2020-01-01T00:00:00Z",
+            )
+            stale_signed = sign_envelope(worker._keypair, env, signed.payload)
+            res = verify_signed_result(stale_signed, public_key_hex=worker.public_key_hex)
+            return {
+                "attack": "stale_replay",
+                "detected": not res.ok,
+                "reason": res.reason,
+                "explanation": "Timestamp is outside the freshness window. Replay protection prevented stale execution ingestion.",
+                "checks": res.checks,
+            }
+        elif attack_type == "wrong_model":
+            env = build_envelope(
+                task_id="wrong-model-task-1",
+                worker_id=worker.worker_id,
+                model_version="unauthorized-model@9.9.9",
+                input_commitment=in_comm,
+                payload=signed.payload,
+            )
+            bad_model_signed = sign_envelope(worker._keypair, env, signed.payload)
+            res = verify_signed_result(
+                bad_model_signed,
+                public_key_hex=worker.public_key_hex,
+                allowed_model_versions={worker.model_version},
+            )
+            return {
+                "attack": "wrong_model",
+                "detected": not res.ok,
+                "reason": res.reason,
+                "explanation": "Worker attempted to execute an unapproved or backdoored model version.",
+                "checks": res.checks,
+            }
+        else:
+            raise HTTPException(status_code=400, detail=f"unknown attack_type {attack_type}")
+
+    @app.get("/dashboard", response_class=HTMLResponse, include_in_schema=False)
+    def dashboard():
+        """Interactive frontend lab with digit canvas, attack simulator, and worker pool."""
+        dash_file = Path(__file__).resolve().parents[2] / "dashboard" / "index.html"
+        if dash_file.exists():
+            return dash_file.read_text(encoding="utf-8")
+        raise HTTPException(status_code=404, detail="dashboard not built")
 
     return app
 

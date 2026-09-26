@@ -149,9 +149,9 @@ def main() -> int:
             "matters to a user, independent of whether anything was flagged.",
         ],
     }
-    (RESULTS_DIR / f"{exp_id}.json").write_text(json.dumps(payload, indent=2))
+    (RESULTS_DIR / f"{exp_id}.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
-    with (RESULTS_DIR / f"{exp_id}.csv").open("w", newline="") as fh:
+    with (RESULTS_DIR / f"{exp_id}.csv").open("w", newline="", encoding="utf-8") as fh:
         w = csv.DictWriter(fh, fieldnames=[k for k in asdict(rows[0]) if k != "failure_reasons"])
         w.writeheader()
         for r in rows:
