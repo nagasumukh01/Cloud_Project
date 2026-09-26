@@ -15,6 +15,7 @@ import time
 from contextlib import asynccontextmanager
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Query, status
+from fastapi.responses import HTMLResponse
 
 from services.common.bootstrap import System, build_system
 from services.common.config import get_settings
@@ -110,6 +111,112 @@ def create_app(n_workers: int = 4, n_faulty: int = 0, policy: str = "risk_adapti
         raise HTTPException(status_code=403, detail="admin API key required")
 
     # -- health / readiness --------------------------------------------------
+    @app.get("/", response_class=HTMLResponse, include_in_schema=False)
+    def index() -> str:
+        """Human-readable landing page.
+
+        Exists so that opening the gateway in a browser shows live system state instead of a
+        bare 404. It is a convenience view only: it reads the same registry the JSON endpoints
+        read, exposes no key material (worker fingerprints are the same 16-hex prefix shown by
+        /workers), and is deliberately self-contained (inline CSS, no CDN, no JavaScript) so it
+        renders in sandboxed/offline contexts.
+        """
+        sysobj = _system
+        st = get_settings()
+        workers = sysobj.registry.all() if sysobj else []
+        n_active = len(sysobj.registry.available()) if sysobj else 0
+        model_line = "not loaded"
+        if sysobj is not None:
+            model_line = (
+                f"{sysobj.model.version} &middot; {sysobj.model.n_features} features "
+                f"&middot; test accuracy {sysobj.model.test_accuracy:.4f}"
+            )
+        auth_on = st.require_auth
+        rows = "".join(
+            "<tr><td><code>{wid}</code></td><td>{status}</td>"
+            "<td class=n>{trust:.3f}</td><td><code>{fp}</code></td></tr>".format(
+                wid=w.worker_id,
+                status=w.status.value if hasattr(w.status, "value") else w.status,
+                trust=sysobj.trust.score(w.worker_id) if sysobj else 0.0,
+                fp=w.fingerprint,
+            )
+            for w in workers
+        ) or "<tr><td colspan=4>no workers registered</td></tr>"
+
+        endpoints = [
+            ("GET", "/docs", "Interactive OpenAPI console - submit a task from the browser"),
+            ("GET", "/health", "Liveness: worker count, database reachability"),
+            ("GET", "/ready", "Readiness: model loaded, workers registered, auth state"),
+            ("GET", "/model", "Model version, feature count, weight digest"),
+            ("POST", "/tasks", "Submit inference; returns result, risk score, verdict"),
+            ("GET", "/workers", "Registry view (public fingerprints only)"),
+            ("GET", "/metrics", "Counters: tasks, verification rate, integrity failures"),
+            ("GET", "/verification/batch/root", "Merkle root over verified envelopes"),
+        ]
+        ep_rows = "".join(
+            f"<tr><td><span class=m>{m}</span></td><td><code>{p}</code></td><td>{d}</td></tr>"
+            for m, p, d in endpoints
+        )
+        warn = (
+            ""
+            if auth_on
+            else "<div class=warn><strong>Authentication is disabled</strong> "
+            "(<code>TPC_REQUIRE_AUTH=false</code>). Intended for local experiments only - "
+            "every endpoint below is unauthenticated in this process.</div>"
+        )
+        return f"""<!doctype html><html lang=en><head><meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<title>TrustProof-Cloud API Gateway</title><style>
+*{{box-sizing:border-box}}
+body{{margin:0;padding:2.2rem 1.4rem;background:#0f1117;color:#e6e8ee;
+ font:15px/1.55 ui-sans-serif,-apple-system,Segoe UI,Roboto,Helvetica,Arial}}
+.wrap{{max-width:900px;margin:0 auto}}
+h1{{margin:0 0 .2rem;font-size:1.5rem;letter-spacing:-.01em}}
+.sub{{color:#9aa3b2;margin:0 0 1.6rem;font-size:.92rem}}
+.badge{{display:inline-block;padding:.12rem .5rem;border-radius:999px;font-size:.74rem;
+ font-weight:600;vertical-align:middle;margin-left:.45rem}}
+.ok{{background:#0e3a22;color:#4ade80}} .deg{{background:#3a2a0e;color:#fbbf24}}
+.card{{background:#161a23;border:1px solid #232937;border-radius:10px;
+ padding:1rem 1.15rem;margin-bottom:1rem}}
+h2{{margin:0 0 .7rem;font-size:.82rem;text-transform:uppercase;letter-spacing:.07em;color:#8b93a4}}
+table{{width:100%;border-collapse:collapse;font-size:.88rem}}
+th,td{{text-align:left;padding:.4rem .55rem;border-bottom:1px solid #222836}}
+th{{color:#8b93a4;font-weight:600;font-size:.76rem;text-transform:uppercase}}
+tr:last-child td{{border-bottom:none}}
+td.n{{font-variant-numeric:tabular-nums}}
+code{{font:.85em ui-monospace,SFMono-Regular,Menlo,monospace;color:#93c5fd}}
+.m{{font:.72rem ui-monospace,monospace;color:#c4b5fd;font-weight:700}}
+.kv{{display:flex;gap:.6rem;padding:.25rem 0;font-size:.9rem}}
+.kv span:first-child{{color:#8b93a4;min-width:120px}}
+.warn{{background:#3a1d1d;border:1px solid #5b2b2b;color:#fca5a5;
+ padding:.7rem .9rem;border-radius:8px;margin-bottom:1rem;font-size:.87rem}}
+.foot{{color:#6b7280;font-size:.8rem;margin-top:1.4rem;line-height:1.6}}
+a{{color:#7dd3fc}}
+</style></head><body><div class=wrap>
+<h1>TrustProof-Cloud<span class="badge {"ok" if n_active else "deg"}">
+{"operational" if n_active else "degraded"}</span></h1>
+<p class=sub>Risk-adaptive cryptographically verifiable ML inference &middot;
+API gateway v{API_VERSION}</p>
+{warn}
+<div class=card><h2>System</h2>
+<div class=kv><span>Model</span><span>{model_line}</span></div>
+<div class=kv><span>Workers active</span><span>{n_active} of {len(workers)}</span></div>
+<div class=kv><span>Database</span>
+<span>{"connected" if sysobj and sysobj.session_factory else "unavailable"}</span></div>
+<div class=kv><span>Authentication</span>
+<span>{"enabled" if auth_on else "disabled (local mode)"}</span></div>
+</div>
+<div class=card><h2>Worker registry</h2>
+<table><tr><th>Worker</th><th>Status</th><th>Trust</th><th>Public key fingerprint</th></tr>
+{rows}</table></div>
+<div class=card><h2>Endpoints</h2><table>{ep_rows}</table></div>
+<p class=foot>Private keys never leave a worker process and are never served by this API;
+the column above is a truncated <em>public</em> key fingerprint.<br>
+Figures shown are from a local simulation under an injected fault model &mdash; not
+production measurements. No security guarantee is claimed beyond the analysis in
+<code>THREAT_MODEL.md</code>.</p>
+</div></body></html>"""
+
     @app.get("/health", response_model=HealthResponse, tags=["ops"])
     def health() -> HealthResponse:
         sysobj = _system

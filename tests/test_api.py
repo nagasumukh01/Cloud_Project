@@ -185,3 +185,36 @@ def test_auth_is_enforced_when_configured(monkeypatch, features):
         monkeypatch.delenv("TPC_ADMIN_API_KEY", raising=False)
         monkeypatch.setenv("TPC_REQUIRE_AUTH", "false")
         cfg.get_settings(refresh=True)
+
+
+def test_index_page_renders_html(client):
+    """The gateway root serves a human-readable status page, not a 404.
+
+    Regression guard: the preview/browser entry point must render rather than 404.
+    """
+    r = client.get("/")
+    assert r.status_code == 200
+    assert r.headers["content-type"].startswith("text/html")
+    body = r.text
+    assert "TrustProof-Cloud" in body
+    assert "Worker registry" in body
+
+
+def test_index_page_never_exposes_private_key_material(client):
+    """The landing page must show public fingerprints only."""
+    body = client.get("/").text
+    for marker in ("-----BEGIN", "PRIVATE", "private_key", "signing_key"):
+        assert marker not in body, f"landing page leaked {marker!r}"
+
+
+def test_index_page_is_self_contained(client):
+    """No CDN/remote assets: the page must render offline and in sandboxed frames."""
+    body = client.get("/").text
+    for remote in ("http://", "https://", "<script"):
+        assert remote not in body, f"landing page pulls remote asset or script: {remote!r}"
+
+
+def test_index_page_flags_disabled_authentication(client):
+    """When auth is off, the page must say so rather than look production-ready."""
+    body = client.get("/").text
+    assert "Authentication is disabled" in body or "disabled (local mode)" in body
