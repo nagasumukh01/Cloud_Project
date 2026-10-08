@@ -40,6 +40,19 @@ def get_system() -> System:
     return _system
 
 
+def get_dashboard_html() -> str | None:
+    candidates = [
+        Path(__file__).resolve().parents[2] / "dashboard" / "index.html",
+        Path(__file__).resolve().parents[1] / "dashboard" / "index.html",
+        Path.cwd() / "dashboard" / "index.html",
+        Path("/app/dashboard/index.html"),
+    ]
+    for dash_file in candidates:
+        if dash_file.exists():
+            return dash_file.read_text(encoding="utf-8")
+    return None
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global _system
@@ -442,15 +455,9 @@ production measurements. No security guarantee is claimed beyond the analysis in
     @app.get("/dashboard", response_class=HTMLResponse, include_in_schema=False)
     def dashboard():
         """Interactive frontend lab with digit canvas, attack simulator, and worker pool."""
-        candidates = [
-            Path(__file__).resolve().parents[2] / "dashboard" / "index.html",
-            Path(__file__).resolve().parents[1] / "dashboard" / "index.html",
-            Path.cwd() / "dashboard" / "index.html",
-            Path("/app/dashboard/index.html"),
-        ]
-        for dash_file in candidates:
-            if dash_file.exists():
-                return dash_file.read_text(encoding="utf-8")
+        dash = get_dashboard_html()
+        if dash is not None:
+            return dash
         raise HTTPException(status_code=404, detail="dashboard not built")
 
     return app
