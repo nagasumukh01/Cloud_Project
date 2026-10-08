@@ -22,6 +22,7 @@ COPY simulator/ ./simulator/
 COPY experiments/ ./experiments/
 COPY scripts/ ./scripts/
 COPY tests/ ./tests/
+COPY dashboard/ ./dashboard/
 COPY pyproject.toml Makefile ./
 
 # Warm the model cache at build time so the first request is not slowed by training,

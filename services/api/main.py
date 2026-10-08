@@ -442,9 +442,15 @@ production measurements. No security guarantee is claimed beyond the analysis in
     @app.get("/dashboard", response_class=HTMLResponse, include_in_schema=False)
     def dashboard():
         """Interactive frontend lab with digit canvas, attack simulator, and worker pool."""
-        dash_file = Path(__file__).resolve().parents[2] / "dashboard" / "index.html"
-        if dash_file.exists():
-            return dash_file.read_text(encoding="utf-8")
+        candidates = [
+            Path(__file__).resolve().parents[2] / "dashboard" / "index.html",
+            Path(__file__).resolve().parents[1] / "dashboard" / "index.html",
+            Path.cwd() / "dashboard" / "index.html",
+            Path("/app/dashboard/index.html"),
+        ]
+        for dash_file in candidates:
+            if dash_file.exists():
+                return dash_file.read_text(encoding="utf-8")
         raise HTTPException(status_code=404, detail="dashboard not built")
 
     return app
