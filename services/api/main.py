@@ -267,7 +267,7 @@ production measurements. No security guarantee is claimed beyond the analysis in
             if len(feats) < 64:
                 feats.extend([0.0] * (64 - len(feats)))
             outcome = sysobj.scheduler.submit(
-                feats, task_type="text_sentiment", sensitivity=body.sensitivity,
+                feats, task_type="digits_classification", sensitivity=body.sensitivity,
                 experiment_id=body.experiment_id,
                 timeout_ms=get_settings().task_timeout_ms,
             )
@@ -277,9 +277,9 @@ production measurements. No security guarantee is claimed beyond the analysis in
             return TaskResponse(
                 task_id=outcome.task_id, status=outcome.status.value, verdict=outcome.verdict.value,
                 result=res_dict, executed_by=outcome.executed_by, risk_score=round(outcome.risk_score, 4),
-                verification_decision=outcome.verification_decision, replicas_used=outcome.replicas_used,
-                cost_units=outcome.cost_units, latency_ms=outcome.latency_ms,
-                verification_latency_ms=outcome.verification_latency_ms,
+                verification_decision=outcome.decision, replicas_used=outcome.replicas_used,
+                cost_units=outcome.cost_units, latency_ms=round(outcome.latency_ms, 3),
+                verification_latency_ms=round(outcome.verification_latency_ms, 4),
                 integrity_failure=outcome.integrity_failure, detail=outcome.detail,
             )
 
