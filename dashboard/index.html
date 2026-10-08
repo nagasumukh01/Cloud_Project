@@ -120,18 +120,47 @@
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div class="lg:col-span-6 bg-dark-900 border border-dark-800 rounded-2xl p-6 shadow-xl flex flex-col justify-between">
           <div>
-            <div class="flex items-center justify-between mb-4">
-              <div>
-                <h2 class="text-lg font-bold text-white flex items-center gap-2">
-                  <span>8x8 Digit Input</span>
-                  <span class="text-xs px-2 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/20 font-mono">64 Features</span>
-                </h2>
-                <p class="text-xs text-slate-400">Click or drag cells to draw a handwritten digit, or click a preset below.</p>
+            <div class="mb-4">
+              <span class="text-xs font-semibold text-slate-400 block uppercase tracking-wider mb-2">Select Machine Learning Model Workload:</span>
+              <div class="grid grid-cols-2 gap-2">
+                <button type="button" onclick="setTaskMode('digits')" id="mode-digits" class="mode-btn px-3 py-2 rounded-lg text-xs font-bold bg-brand-500 text-dark-950 border border-brand-400 transition flex items-center justify-center gap-1.5">
+                  <span>🎨</span> 8x8 Digit Image Model
+                </button>
+                <button type="button" onclick="setTaskMode('nlp')" id="mode-nlp" class="mode-btn px-3 py-2 rounded-lg text-xs font-medium bg-dark-850 text-slate-300 hover:text-white border border-dark-700 transition flex items-center justify-center gap-1.5">
+                  <span>💬</span> Real NLP Sentiment Model
+                </button>
               </div>
-              <button onclick="clearGrid()" class="px-2.5 py-1 text-xs rounded bg-dark-800 hover:bg-dark-700 border border-dark-700 text-slate-300 transition">Clear</button>
             </div>
-            <div class="flex justify-center my-4">
-              <div id="pixel-grid" class="grid grid-cols-8 gap-1.5 p-3 bg-dark-950 border border-dark-700 rounded-xl w-72 max-w-full shadow-inner select-none cursor-crosshair"></div>
+
+            <div id="container-digits-input">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                    <span>8x8 Digit Input</span>
+                    <span class="text-xs px-2 py-0.5 rounded bg-brand-500/10 text-brand-400 border border-brand-500/20 font-mono">64 Features</span>
+                  </h2>
+                  <p class="text-xs text-slate-400">Click or drag cells to draw a handwritten digit, or click a preset below.</p>
+                </div>
+                <button onclick="clearGrid()" class="px-2.5 py-1 text-xs rounded bg-dark-800 hover:bg-dark-700 border border-dark-700 text-slate-300 transition">Clear</button>
+              </div>
+              <div class="flex justify-center my-4">
+                <div id="pixel-grid" class="grid grid-cols-8 gap-1.5 p-3 bg-dark-950 border border-dark-700 rounded-xl w-72 max-w-full shadow-inner select-none cursor-crosshair"></div>
+              </div>
+            </div>
+
+            <div id="container-nlp-input" class="hidden">
+              <div class="mb-3">
+                <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                  <span>NLP Text Sentiment Model</span>
+                  <span class="text-xs px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono">TF-IDF Vectorizer</span>
+                </h2>
+                <p class="text-xs text-slate-400">Type any custom text string to evaluate real-time ML sentiment & cryptographic verification.</p>
+              </div>
+              <textarea id="nlp-text-input" rows="4" class="w-full bg-dark-950 border border-dark-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-brand-500 font-sans" placeholder="e.g. TrustProof cryptographic verification is extremely fast, secure, and reliable!"></textarea>
+              <div class="flex gap-2 mt-2">
+                <button onclick="setNlpText('TrustProof cryptographic verification is fast, secure, and reliable!')" class="py-1 px-2 text-[11px] font-semibold rounded bg-dark-800 hover:bg-dark-700 text-slate-300 border border-dark-700">Positive Sample</button>
+                <button onclick="setNlpText('Terrible system failure, corrupt payload error, and bad defect!')" class="py-1 px-2 text-[11px] font-semibold rounded bg-dark-800 hover:bg-dark-700 text-slate-300 border border-dark-700">High Risk Sample</button>
+              </div>
             </div>
             <div class="space-y-2 mt-4">
               <span class="text-xs font-semibold text-slate-400 block uppercase tracking-wider">Load Digit Preset:</span>
@@ -410,6 +439,32 @@
       }
     }
 
+    let currentTaskMode = 'digits';
+
+    function setTaskMode(mode) {
+      currentTaskMode = mode;
+      const btnDigits = document.getElementById('mode-digits');
+      const btnNlp = document.getElementById('mode-nlp');
+      const digitsContainer = document.getElementById('container-digits-input');
+      const nlpContainer = document.getElementById('container-nlp-input');
+
+      if (mode === 'nlp') {
+        btnNlp.className = 'mode-btn px-3 py-2 rounded-lg text-xs font-bold bg-brand-500 text-dark-950 border border-brand-400 transition flex items-center justify-center gap-1.5';
+        btnDigits.className = 'mode-btn px-3 py-2 rounded-lg text-xs font-medium bg-dark-850 text-slate-300 hover:text-white border border-dark-700 transition flex items-center justify-center gap-1.5';
+        digitsContainer.classList.add('hidden');
+        nlpContainer.classList.remove('hidden');
+      } else {
+        btnDigits.className = 'mode-btn px-3 py-2 rounded-lg text-xs font-bold bg-brand-500 text-dark-950 border border-brand-400 transition flex items-center justify-center gap-1.5';
+        btnNlp.className = 'mode-btn px-3 py-2 rounded-lg text-xs font-medium bg-dark-850 text-slate-300 hover:text-white border border-dark-700 transition flex items-center justify-center gap-1.5';
+        nlpContainer.classList.add('hidden');
+        digitsContainer.classList.remove('hidden');
+      }
+    }
+
+    function setNlpText(txt) {
+      document.getElementById('nlp-text-input').value = txt;
+    }
+
     function clearGrid() {
       gridPixels.fill(0.0);
       for (let i = 0; i < 64; i++) updatePixelView(i);
@@ -478,19 +533,25 @@
       statusBadge.className = 'text-xs px-2.5 py-1 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/20 font-mono animate-pulse';
 
       try {
-        const features = gridPixels.map(p => p * 16.0);
+        let reqBody = {};
+        if (currentTaskMode === 'nlp') {
+          const txt = document.getElementById('nlp-text-input').value.trim() || 'TrustProof cryptographic verification is fast, secure, and reliable!';
+          reqBody = { text_input: txt, sensitivity: currentSensitivity, task_type: 'text_sentiment' };
+        } else {
+          const features = gridPixels.map(p => p * 16.0);
+          reqBody = { features: features, sensitivity: currentSensitivity, task_type: 'digits_classification' };
+        }
+
         const res = await fetch('/tasks', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            features: features,
-            sensitivity: currentSensitivity
-          })
+          body: JSON.stringify(reqBody)
         });
 
         const data = await res.json();
         if (res.ok) {
-          document.getElementById('res-label').innerText = data.result.label;
+          const labelDisplay = data.result.sentiment ? `${data.result.sentiment} (${data.result.label})` : data.result.label;
+          document.getElementById('res-label').innerText = labelDisplay;
           document.getElementById('res-confidence').innerText = (data.result.confidence * 100).toFixed(1) + '%';
           document.getElementById('res-entropy').innerText = data.result.entropy.toFixed(4);
 

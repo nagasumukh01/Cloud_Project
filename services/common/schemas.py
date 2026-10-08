@@ -17,13 +17,16 @@ class TaskSubmission(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     task_type: str = Field(default="digits_classification", max_length=64)
-    features: list[float] = Field(..., min_length=1, max_length=MAX_FEATURES)
+    features: list[float] | None = Field(default=None, min_length=1, max_length=MAX_FEATURES)
+    text_input: str | None = Field(default=None, max_length=1024)
     sensitivity: Sensitivity = "medium"
     experiment_id: str | None = Field(default=None, max_length=64)
 
     @field_validator("features")
     @classmethod
-    def finite_features(cls, v: list[float]) -> list[float]:
+    def finite_features(cls, v: list[float] | None) -> list[float] | None:
+        if v is None:
+            return None
         import math
 
         if any(math.isnan(x) or math.isinf(x) for x in v):

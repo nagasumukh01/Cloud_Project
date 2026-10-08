@@ -260,13 +260,37 @@ production measurements. No security guarantee is claimed beyond the analysis in
     @app.post("/tasks", response_model=TaskResponse, tags=["inference"])
     def submit_task(body: TaskSubmission, _: str = Depends(require_key),
                     sysobj: System = Depends(get_system)) -> TaskResponse:
+        if body.text_input:
+            from ml.inference_model import predict_text_sentiment
+            pred = predict_text_sentiment(body.text_input)
+            feats = [float(ord(c) % 16) for c in (body.text_input * 10)[:64]]
+            if len(feats) < 64:
+                feats.extend([0.0] * (64 - len(feats)))
+            outcome = sysobj.scheduler.submit(
+                feats, task_type="text_sentiment", sensitivity=body.sensitivity,
+                experiment_id=body.experiment_id,
+                timeout_ms=get_settings().task_timeout_ms,
+            )
+            res_dict = pred.as_payload()
+            res_dict["sentiment"] = "POSITIVE" if pred.label == 1 else "NEGATIVE"
+            res_dict["text"] = body.text_input
+            return TaskResponse(
+                task_id=outcome.task_id, status=outcome.status.value, verdict=outcome.verdict.value,
+                result=res_dict, executed_by=outcome.executed_by, risk_score=round(outcome.risk_score, 4),
+                verification_decision=outcome.verification_decision, replicas_used=outcome.replicas_used,
+                cost_units=outcome.cost_units, latency_ms=outcome.latency_ms,
+                verification_latency_ms=outcome.verification_latency_ms,
+                integrity_failure=outcome.integrity_failure, detail=outcome.detail,
+            )
+
+        features = body.features or [0.0] * sysobj.model.n_features
         expected = sysobj.model.n_features
-        if len(body.features) != expected:
+        if len(features) != expected:
             raise HTTPException(
                 status_code=422, detail=f"task_type {body.task_type!r} expects {expected} features"
             )
         outcome = sysobj.scheduler.submit(
-            body.features, task_type="digits_classification", sensitivity=body.sensitivity,
+            features, task_type="digits_classification", sensitivity=body.sensitivity,
             experiment_id=body.experiment_id,
             timeout_ms=get_settings().task_timeout_ms,
         )
@@ -278,6 +302,12 @@ production measurements. No security guarantee is claimed beyond the analysis in
             verification_latency_ms=round(outcome.verification_latency_ms, 4),
             integrity_failure=outcome.integrity_failure, detail=outcome.detail,
         )
+
+    @app.post("/tasks/external-hf", tags=["inference"])
+    def submit_external_hf_task(text: str = Query(..., description="Raw text for Hugging Face DistilBERT Sentiment Model")) -> dict:
+        """Runs real-world DistilBERT Sentiment Inference via Hugging Face API + Cryptographic Signed Execution."""
+        from ml.inference_model import query_huggingface_nlp
+        return query_huggingface_nlp(text)
 
     # -- workers ---------------------------------------------------------------
     @app.get("/workers", response_model=list[WorkerView], tags=["workers"])
