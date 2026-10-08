@@ -419,7 +419,7 @@ production measurements. No security guarantee is claimed beyond the analysis in
                 payload=signed.payload,
                 timestamp="2020-01-01T00:00:00Z",
             )
-            stale_signed = sign_envelope(worker._keypair, env, signed.payload)
+            stale_signed = sign_envelope(worker.keypair, env, signed.payload)
             res = verify_signed_result(stale_signed, public_key_hex=worker.public_key_hex)
             return {
                 "attack": "stale_replay",
@@ -436,7 +436,7 @@ production measurements. No security guarantee is claimed beyond the analysis in
                 input_commitment=in_comm,
                 payload=signed.payload,
             )
-            bad_model_signed = sign_envelope(worker._keypair, env, signed.payload)
+            bad_model_signed = sign_envelope(worker.keypair, env, signed.payload)
             res = verify_signed_result(
                 bad_model_signed,
                 public_key_hex=worker.public_key_hex,
